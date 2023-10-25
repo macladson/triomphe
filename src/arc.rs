@@ -756,6 +756,12 @@ impl<T: Serialize> Serialize for Arc<T> {
     }
 }
 
+impl<'a, A: arbitrary::Arbitrary<'a>> arbitrary::Arbitrary<'a> for Arc<A> {
+    fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+        arbitrary::Arbitrary::arbitrary(u).map(Self::new)
+    }
+}
+
 // Safety:
 // This implementation must guarantee that it is sound to call replace_ptr with an unsized variant
 // of the pointer retuned in `as_sized_ptr`. The basic property of Unsize coercion is that safety
